@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import MarkerInfoContainer from '../components/marker-info/MarkerInfo';
 
 const MapScreen = () => {
   const [markers, setMarkers] = useState([]);
 
-  const handleLongPress = ({ nativeEvent: { coordinate, position } }) => {
+  const handleLongPress = ({ nativeEvent: { coordinate } }) => {
     setMarkers([...markers, {
       coordinate,
     }]);

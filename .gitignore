@@ -2,6 +2,10 @@
 #
 .DS_Store
 
+#IDE
+.vscode
+.idea
+
 # Xcode
 #
 build/
@@ -24,7 +28,6 @@ DerivedData
 # Android/IntelliJ
 #
 build/
-.idea
 .gradle
 local.properties
 *.iml

@@ -4,43 +4,44 @@ import { View, Text, Pressable } from 'react-native';
 import axios from 'axios';
 
 const MarkerInfoContainer = ({ key, coordinate, ...props }) => {
-  const [location, setLocation] = useState('Kyiv, Ukraine');
+  const [location, setLocation] = useState('London, UK');
   const [temperature, setTemperature] = useState('+1C');
-  const ref = useRef();
   const [loaded, setLoaded] = useState(false);
+  const ref = useRef();
 
   let url = `http://api.weatherstack.com/current?access_key=a0511487d6eb5967bad5b78dc1525142&query=${coordinate.latitude},${coordinate.longitude}`;
 
   const setNewWeather = () => {
-    console.log("setNewWeather");
-    setLoaded(false)
-
+    console.log("press");
     axios.get(url)
       .then(res => {
         // console.log(res.data);
-        setLocation("mmm");
+        setLocation(res.data.location.name);
         setTemperature(Math.random());
       })
       .catch(err => console.log(err))
-      .finally(()=>{setLoaded(true);redraw()}
-      )
+      .finally(()=>redraw())
   }
 
-  const redraw = () => {
-    if (ref && ref.current && ref.current.redrawCallout) {
+  const redraw = ()=>{
+    if (ref && ref.current && ref.current.redraw) {
       console.log('redraw');
-      ref.current.redrawCallout();
+      ref.current.hideCallout();
+
+      // ref.current.redraw();
     }
   }
 
   useEffect(() => {
     console.log("MarkerInfoContainer effect")
     setNewWeather();
-  },[]);
+    redraw();
+  },[location,temperature]);
 
-  // useEffect(()=>{
-  //   console.log('[location,temperature]')
-  // },[location,temperature,loaded])
+  useEffect(() => {
+    console.log("MarkerInfoContainer effect")
+    redraw();
+  },[]);
 
   return <MarkerInfo
     {...props}
@@ -49,30 +50,26 @@ const MarkerInfoContainer = ({ key, coordinate, ...props }) => {
     location={location}
     temperature={temperature}
     onPress={setNewWeather}
-    key={key}
-    loaded={loaded}
     />;
 };
 
-const MarkerInfo = React.forwardRef(({  location, temperature, onPress,loaded,...props }, ref) => {
+const MarkerInfo = React.forwardRef(({ coordinate, location, temperature, onPress }, ref) => {
   return (
     <Marker
-      {...props}
+      coordinate={coordinate}
       onPress={onPress}
       ref={ref}
     >
-      <Callout style={{width:200, height:50}} onPress={()=> console.log("callout pressed")}>
-        {
-          loaded ? <View style={{width:200}}>
+      <Callout>
+        <View>
           <Text>
             {location}
           </Text>
           <Text>
             {temperature}
           </Text>
-        </View> :
-        <Text>Loading...</Text>
-        }
+          <Pressable onPress={()=>setLocation("Hello")}>CLICK ME</Pressable>
+        </View>
       </Callout>
     </Marker>
   );
