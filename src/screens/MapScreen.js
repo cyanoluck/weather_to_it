@@ -1,37 +1,36 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, Pressable } from 'react-native';
-import MapView, { Marker, Callout } from 'react-native-maps';
-import MarkerInfoContainer from '../components/marker-info/MarkerInfo';
+import React, {useState, useRef} from 'react';
+import {View, Text, Pressable} from 'react-native';
+import MapView, {Marker, Callout} from 'react-native-maps';
+import MarkerInfo from '../components/marker-info/MarkerInfo';
 
 const MapScreen = () => {
   const [markers, setMarkers] = useState([]);
 
-  const handleLongPress = ({ nativeEvent: { coordinate } }) => {
-    setMarkers([...markers, {
-      coordinate,
-    }]);
+  const handleLongPress = ({nativeEvent: {coordinate}}) => {
+    setMarkers([
+      ...markers,
+      {
+        coordinate,
+      },
+    ]);
   };
 
-  const renderMarker = (marker, index) => <MarkerInfoContainer
-    key={marker.coordinate.latitude}
-    coordinate={marker.coordinate}
-  />;
+  const renderMarker = ({coordinate}, index) => (
+    <MarkerInfo key={coordinate.latitude} coordinate={coordinate} />
+  );
 
   return (
     <>
       <MapView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         initialRegion={{
-          latitude: 51.8078,
-          longitude: -0.0877321,
+          latitude: 50.4501,
+          longitude: 30.5234,
           latitudeDelta: 0.009,
           longitudeDelta: 0.009,
         }}
-        onLongPress={handleLongPress}
-      >
-        {
-          markers.map(renderMarker)
-        }
+        onLongPress={handleLongPress}>
+        {markers.map(renderMarker)}
       </MapView>
     </>
   );
