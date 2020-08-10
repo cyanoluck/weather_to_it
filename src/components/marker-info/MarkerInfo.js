@@ -93,7 +93,7 @@ const MarkerInfo = React.forwardRef(
   ({location, temperature, onPress, loaded, ...props}, ref) => {
     return (
       <Marker {...props} onPress={onPress} ref={ref}>
-        <Callout onPress={() => console.log('callout pressed')}>
+        <Callout onPress={() => props.onPressedCollapse(location)}>
           {loaded ? (
             <View>
               <Text>{location}</Text>

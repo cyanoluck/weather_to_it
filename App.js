@@ -11,9 +11,7 @@ import {
 import Navigation from './src/navigation/Navigation';
 
 const App = () => {
-  return (
-    <Navigation/>
-  );
+  return <Navigation />;
 };
 
 export default App;

@@ -1,44 +1,113 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, View, TextInput, Pressable} from 'react-native';
+import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
 
-const SearchScreen = () => {
+const SearchScreen = ({
+  route: {
+    params: {coordinate = null, location = null},
+  },
+  navigation,
+}) => {
   const [forecastList, setForecastList] = useState([]);
   const [searchString, setSearchString] = useState('');
 
-  const handleSearchBtn = () => {
-    // let url = `http://api.weatherstack.com/forecast?access_key=a0511487d6eb5967bad5b78dc1525142&query=${searchString}&forecast_days=7&hourly=24`;
-    let url = `http://api.openweathermap.org/data/2.5/forecast/daily?q=${searchString}&cnt=${7}&appid=0c0d60691e2d42da75db8e266a8ec880`;
+  //received new coordinate when clicked marker
+  // useEffect(() => {
+  //   console.log('effect');
+  //   const {latitude, longitude} = coordinate;
 
-    // Requesthttp://api.weatherstack.com/forecast
-    // ? access_key = YOUR_ACCESS_KEY
-    // & query = New York
-    // & forecast_days = 1
-    // & hourly = 1
+  //   const fetchData = async () => {
+  //     const result = await axios(
+  //       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&appid=13e6eb3cdf8a03fd71534712501f06f8`,
+  //     );
 
-    axios(
-      'https://climacell-microweather-v1.p.rapidapi.com/weather/forecast/hourly?fields=precipitation&unit_system=si&lat=42.8237618&lon=-71.2216286',
-      {
-        method: 'GET',
-        headers: {
-          'x-rapidapi-host': 'climacell-microweather-v1.p.rapidapi.com',
-          'x-rapidapi-key':
-            '266dc4ea45mshe74a1a9798d796bp155a49jsn97e0e8574ae5',
-        },
-      },
-    )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  //     console.log(result.data);
 
-    // axios.get(url)
-    //   .then(res => {
-    //     console.log(res.data);
-    //   })
-    //   .catch(err => console.log(err))
+  //     setSearchString(location);
+  //   };
+
+  //   fetchData();
+  // }, [coordinate]);
+
+  // useEffect(() => {
+  //   let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinate.latitude}&lon=${coordinate.longitude}&%20exclude={part}&appid=0c0d60691e2d42da75db8e266a8ec880`;
+  //   const data = getWeatherByCoordinates(coordinate);
+  //   // setSearchString(data.current.clouds);
+  // }, [setSearchString, coordinate]);
+  // useEffect(() => {
+  //   let url = `https://api.openweathermap.org/data/2.5/onecall?lat=50.4501&lon=30.5234&exclude=hourly,minutely&appid=13e6eb3cdf8a03fd71534712501f06f8`;
+  //   let data;
+  //   const fetchData = async () => {
+  //     const result = await axios(
+  //       'https://hn.algolia.com/api/v1/search?query=redux',
+  //     );
+  //     setData(result.data);
+  //   };
+  //   const fetch = async()=>{
+  //     const response= await axios
+  //     .get(url)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       data = response.data;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+  //   console.log('coordinate effect');
+  //   axios
+  //     .get(url)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       data = response.data;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  //   setSearchString(data.current.clouds);
+  // }, [coordinate]);
+  // useEffect(() => {
+  //   let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinate.latitude}&lon=${coordinate.longitude}exclude={hourly}&appid=0c0d60691e2d42da75db8e266a8ec880`;
+  //   let data;
+  //   console.log('coordinate effect');
+  //   // axios
+  //   //   .get(url)
+  //   //   .then((response) => {
+  //   //     console.log(response.data);
+  //   //     result = response.data;
+  //   //   })
+  //   //   .catch((err) => {
+  //   //     console.log(err);
+  //   //   });
+  //   // setSearchString(data.current.clouds);
+  // });
+  // const getWeatherByCoordinates = async ({latitude, longitude}) => {
+  //   return await axios
+  //     .get(
+  //       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&%20exclude={part}&appid=0c0d60691e2d42da75db8e266a8ec880`,
+  //     )
+  //     .then((response) => {
+  //       console.log(response.data);
+
+  //       return response.data;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
+  const handleSearchBtn = async () => {
+    // if (searchString.trim() === '') {
+    //   return;
+    // }
+    // let url = `http://api.openweathermap.org/data/2.5/weather?q=${searchString}&appid=0c0d60691e2d42da75db8e266a8ec880`;
+    // const data = (await axios(url)).data;
+    // console.log(data, 'data');
+    // const result = await axios(
+    //   `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&exclude=hourly,minutely&appid=13e6eb3cdf8a03fd71534712501f06f8`,
+    // );
+    // console.log(result.data, 'forecast');
   };
 
   return (
@@ -289,4 +358,161 @@ const ar = {
       uvi: 5.18,
     },
   ],
+};
+
+const arr = {
+  current: {
+    clouds: 62,
+    dew_point: 289.48,
+    dt: 1597089708,
+    feels_like: 292.64,
+    humidity: 82,
+    pressure: 1016,
+    sunrise: 1597027158,
+    sunset: 1597080438,
+    temp: 292.63,
+    uvi: 6.3,
+    visibility: 10000,
+    weather: [[Object]],
+    wind_deg: 320,
+    wind_speed: 3,
+  },
+  daily: [
+    {
+      clouds: 62,
+      dew_point: 289.48,
+      dt: 1597053600,
+      feels_like: [Object],
+      humidity: 82,
+      pop: 0.78,
+      pressure: 1016,
+      rain: 2.15,
+      sunrise: 1597027158,
+      sunset: 1597080438,
+      temp: [Object],
+      uvi: 6.3,
+      weather: [Array],
+      wind_deg: 42,
+      wind_speed: 2.01,
+    },
+    {
+      clouds: 0,
+      dew_point: 288.07,
+      dt: 1597140000,
+      feels_like: [Object],
+      humidity: 51,
+      pop: 0.89,
+      pressure: 1015,
+      rain: 0.8,
+      sunrise: 1597113649,
+      sunset: 1597166730,
+      temp: [Object],
+      uvi: 5.9,
+      weather: [Array],
+      wind_deg: 345,
+      wind_speed: 2.92,
+    },
+    {
+      clouds: 0,
+      dew_point: 282.43,
+      dt: 1597226400,
+      feels_like: [Object],
+      humidity: 48,
+      pop: 0,
+      pressure: 1018,
+      sunrise: 1597200140,
+      sunset: 1597253021,
+      temp: [Object],
+      uvi: 5.96,
+      weather: [Array],
+      wind_deg: 4,
+      wind_speed: 4.65,
+    },
+    {
+      clouds: 0,
+      dew_point: 282.3,
+      dt: 1597312800,
+      feels_like: [Object],
+      humidity: 47,
+      pop: 0.2,
+      pressure: 1019,
+      rain: 0.13,
+      sunrise: 1597286631,
+      sunset: 1597339310,
+      temp: [Object],
+      uvi: 5.65,
+      weather: [Array],
+      wind_deg: 333,
+      wind_speed: 3.14,
+    },
+    {
+      clouds: 20,
+      dew_point: 281.94,
+      dt: 1597399200,
+      feels_like: [Object],
+      humidity: 50,
+      pop: 0,
+      pressure: 1020,
+      sunrise: 1597373122,
+      sunset: 1597425598,
+      temp: [Object],
+      uvi: 5.82,
+      weather: [Array],
+      wind_deg: 15,
+      wind_speed: 3.05,
+    },
+    {
+      clouds: 70,
+      dew_point: 281.31,
+      dt: 1597485600,
+      feels_like: [Object],
+      humidity: 42,
+      pop: 0,
+      pressure: 1018,
+      sunrise: 1597459613,
+      sunset: 1597511884,
+      temp: [Object],
+      uvi: 5.77,
+      weather: [Array],
+      wind_deg: 109,
+      wind_speed: 2.03,
+    },
+    {
+      clouds: 100,
+      dew_point: 282.32,
+      dt: 1597572000,
+      feels_like: [Object],
+      humidity: 52,
+      pop: 0.32,
+      pressure: 1015,
+      sunrise: 1597546105,
+      sunset: 1597598170,
+      temp: [Object],
+      uvi: 5.54,
+      weather: [Array],
+      wind_deg: 63,
+      wind_speed: 1.36,
+    },
+    {
+      clouds: 21,
+      dew_point: 286.74,
+      dt: 1597658400,
+      feels_like: [Object],
+      humidity: 62,
+      pop: 0.75,
+      pressure: 1015,
+      rain: 9.68,
+      sunrise: 1597632596,
+      sunset: 1597684454,
+      temp: [Object],
+      uvi: 5.18,
+      weather: [Array],
+      wind_deg: 65,
+      wind_speed: 3.75,
+    },
+  ],
+  lat: 50.45,
+  lon: 30.52,
+  timezone: 'Europe/Kiev',
+  timezone_offset: 10800,
 };
