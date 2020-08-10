@@ -3,7 +3,7 @@ import {View, Text, Pressable} from 'react-native';
 import {Marker, Callout} from 'react-native-maps';
 import axios from 'axios';
 
-const MarkerInfoContainer = ({key, coordinate, ...props}) => {
+const MarkerInfoContainer = ({coordinate, ...props}) => {
   const [locationWeather, setLocationWeather] = useState({
     temperature: '',
     location: '',
@@ -16,42 +16,56 @@ const MarkerInfoContainer = ({key, coordinate, ...props}) => {
 
   let ulr2 = `https://eu1.locationiq.com/v1/reverse.php?key=363de1ecb652ea&lat=${coordinate.latitude}&lon=${coordinate.longitude}&format=json`;
 
-  const setNewWeather = () => {
+  const setNewWeather = async () => {
     console.log('setNewWeather');
-    setLoaded(false);
-
     let temperature;
     let location;
 
-    axios
+    // useEffect(
+    //   () => {
+    //     console.log('effect');
+    //   },
+    //   location,
+    //   temperature,
+    // );
+
+    setLoaded(false);
+    await axios
       .get(url)
       .then((res) => {
-        console.log(res.data, 'res');
+        console.log(res.data, 'url res');
         // setLocation('mmm2');
         // setTemperature(res.data.current.temperature);
         temperature = res.data.current.temperature;
       })
       .catch((err) => console.log(err));
 
-    axios
+    await axios
       .get(ulr2)
       .then((res) => {
-        console.log(res.data, 'res.data');
-        city = res.data.display_name;
+        console.log(res.data, 'url2 res');
+        location = res.data.display_name;
       })
-      .catch((err) => console.log(err))
-      .finally(() => {});
+      .catch((err) => console.log(err));
 
-    // setLocationWeather({location, temperature});
-    console.log(locationWeather);
+    setLocationWeather({location, temperature});
     setLoaded(true);
+    redraw();
+
+    console.log('after axios');
+    console.log(location, 'location');
+    console.log(temperature, 'temperature');
+
+    redraw();
   };
 
   //Seems like don't working while callout showning...
   const redraw = () => {
     if (ref && ref.current && ref.current.redrawCallout) {
       console.log('redraw');
-      ref.current.redrawCallout();
+      // ref.current.hideCallout();
+      // ref.current.redrawCallout();
+      // ref.current.showCallout();
     }
   };
 
@@ -62,8 +76,6 @@ const MarkerInfoContainer = ({key, coordinate, ...props}) => {
 
   const {temperature, location} = locationWeather;
 
-  console.log(locationWeather.temperature, locationWeather.location);
-
   return (
     <MarkerInfo
       {...props}
@@ -72,7 +84,6 @@ const MarkerInfoContainer = ({key, coordinate, ...props}) => {
       location={locationWeather.location}
       temperature={locationWeather.temperature}
       onPress={setNewWeather}
-      key={key}
       loaded={loaded}
     />
   );
@@ -83,14 +94,14 @@ const MarkerInfo = React.forwardRef(
     return (
       <Marker {...props} onPress={onPress} ref={ref}>
         <Callout onPress={() => console.log('callout pressed')}>
-          {/* {loaded ? ( */}
-          <View>
-            <Text>{location}</Text>
-            <Text>{temperature}</Text>
-          </View>
-          {/* ) : (
+          {loaded ? (
+            <View>
+              <Text>{location}</Text>
+              <Text>{temperature}</Text>
+            </View>
+          ) : (
             <Text>Loading...</Text>
-          )} */}
+          )}
         </Callout>
       </Marker>
     );

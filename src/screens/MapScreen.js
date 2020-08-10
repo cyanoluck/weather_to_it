@@ -16,7 +16,7 @@ const MapScreen = () => {
   };
 
   const renderMarker = ({coordinate}, index) => (
-    <MarkerInfo key={coordinate.latitude} coordinate={coordinate} />
+    <MarkerInfo key={Math.random()} coordinate={coordinate} />
   );
 
   return (
