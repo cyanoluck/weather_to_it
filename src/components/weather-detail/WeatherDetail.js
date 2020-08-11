@@ -10,7 +10,7 @@ const WeatherDetail = ({day, temperature}) => {
         flex: 1,
         height: 80,
         flexDirection: 'row',
-        margin: 10,
+        marginBottom: 25,
         backgroundColor: 'lightblue',
         justifyContent: 'space-around',
         alignItems: 'center',
@@ -20,7 +20,7 @@ const WeatherDetail = ({day, temperature}) => {
       </View>
 
       <View>
-        <Text>metric</Text>
+        <Text>{temperature}°C</Text>
       </View>
     </View>
   );

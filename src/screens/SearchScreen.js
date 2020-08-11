@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View, TextInput, Pressable, ScrollView} from 'react-native';
 import axios from 'axios';
+import moment from 'moment';
 import WeatherDetail from '../components/weather-detail/WeatherDetail';
+import {OPENWEATHER_APIKEY} from '../helpers/constants';
 
 const SearchScreen = ({route, navigation}) => {
   const [forecastList, setForecastList] = useState([]);
@@ -17,94 +19,28 @@ const SearchScreen = ({route, navigation}) => {
 
       const fetchData = async () => {
         const result = await axios(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&appid=13e6eb3cdf8a03fd71534712501f06f8`,
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${OPENWEATHER_APIKEY}`,
         );
 
-        // console.log(result.data);
+        setForecastList(result.data.daily);
       };
 
       fetchData();
     }
   }, [route.params?.coordinate]);
 
-  // useEffect(() => {
-  //   let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinate.latitude}&lon=${coordinate.longitude}&%20exclude={part}&appid=0c0d60691e2d42da75db8e266a8ec880`;
-  //   const data = getWeatherByCoordinates(coordinate);
-  //   // setSearchString(data.current.clouds);
-  // }, [setSearchString, coordinate]);
-  // useEffect(() => {
-  //   let url = `https://api.openweathermap.org/data/2.5/onecall?lat=50.4501&lon=30.5234&exclude=hourly,minutely&appid=13e6eb3cdf8a03fd71534712501f06f8`;
-  //   let data;
-  //   const fetchData = async () => {
-  //     const result = await axios(
-  //       'https://hn.algolia.com/api/v1/search?query=redux',
-  //     );
-  //     setData(result.data);
-  //   };
-  //   const fetch = async()=>{
-  //     const response= await axios
-  //     .get(url)
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       data = response.data;
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-  //   console.log('coordinate effect');
-  //   axios
-  //     .get(url)
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       data = response.data;
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  //   setSearchString(data.current.clouds);
-  // }, [coordinate]);
-  // useEffect(() => {
-  //   let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinate.latitude}&lon=${coordinate.longitude}exclude={hourly}&appid=0c0d60691e2d42da75db8e266a8ec880`;
-  //   let data;
-  //   console.log('coordinate effect');
-  //   // axios
-  //   //   .get(url)
-  //   //   .then((response) => {
-  //   //     console.log(response.data);
-  //   //     result = response.data;
-  //   //   })
-  //   //   .catch((err) => {
-  //   //     console.log(err);
-  //   //   });
-  //   // setSearchString(data.current.clouds);
-  // });
-  // const getWeatherByCoordinates = async ({latitude, longitude}) => {
-  //   return await axios
-  //     .get(
-  //       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&%20exclude={part}&appid=0c0d60691e2d42da75db8e266a8ec880`,
-  //     )
-  //     .then((response) => {
-  //       console.log(response.data);
-
-  //       return response.data;
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
+  //enter button search
   const handleSearchBtn = async () => {
     if (searchString.trim() === '') {
       return;
     }
 
-    let url = `http://api.openweathermap.org/data/2.5/weather?q=${searchString}&appid=0c0d60691e2d42da75db8e266a8ec880`;
+    let url = `http://api.openweathermap.org/data/2.5/weather?q=${searchString}&appid=${OPENWEATHER_APIKEY}`;
     const data = (await axios(url)).data;
     // console.log(data, 'data');
 
     const result = await axios(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&exclude=hourly,minutely&units=metric&appid=13e6eb3cdf8a03fd71534712501f06f8`,
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&exclude=hourly,minutely&units=metric&appid=${OPENWEATHER_APIKEY}`,
     );
     console.log(result.data, 'forecast');
 
@@ -112,8 +48,13 @@ const SearchScreen = ({route, navigation}) => {
   };
 
   return (
-    <View>
-      <View style={{flexDirection: 'row'}}>
+    <View style={{flex: 1}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          borderColor: 'black',
+          borderWidth: 2,
+        }}>
         <View style={{flex: 1, flexGrow: 1}}>
           <TextInput
             onChangeText={(val) => setSearchString(val)}
@@ -121,13 +62,25 @@ const SearchScreen = ({route, navigation}) => {
             value={searchString}
           />
         </View>
-        <Pressable onPress={handleSearchBtn} style={{backgroundColor: 'red'}}>
+        <Pressable
+          onPress={handleSearchBtn}
+          style={{
+            backgroundColor: 'yellow',
+            alignContent: 'center',
+            justifyContent: 'space-around',
+          }}>
           <Text>Search</Text>
         </Pressable>
       </View>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingTop: 30}}>
         {forecastList.map((item) => {
-          return <WeatherDetail day="Понедельник" />;
+          return (
+            <WeatherDetail
+              key={item.dt}
+              day={moment.unix(item.dt).format('dddd')}
+              temperature={item.temp.day}
+            />
+          );
         })}
       </ScrollView>
     </View>

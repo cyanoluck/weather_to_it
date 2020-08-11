@@ -1,7 +1,10 @@
 import React, {useState, useRef} from 'react';
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, Dimensions} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import MarkerInfo from '../components/marker-info/MarkerInfo';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const MapScreen = ({navigation}) => {
   const [markers, setMarkers] = useState([]);
@@ -29,7 +32,7 @@ const MapScreen = ({navigation}) => {
   return (
     <>
       <MapView
-        style={{flex: 1}}
+        style={{position: 'absolute', height: windowHeight, width: windowWidth}}
         initialRegion={{
           latitude: 50.4501,
           longitude: 30.5234,
@@ -39,6 +42,16 @@ const MapScreen = ({navigation}) => {
         onLongPress={handleLongPress}>
         {markers.map(renderMarker)}
       </MapView>
+      <Text
+        style={{
+          width: '100%',
+          textAlign: 'center',
+          paddingTop: 20,
+          fontSize: 25,
+          fontWeight: '700',
+        }}>
+        weather-to-it
+      </Text>
     </>
   );
 };

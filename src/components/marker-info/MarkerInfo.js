@@ -2,6 +2,7 @@ import React, {useState, useEffect, memo, useRef} from 'react';
 import {View, Text, Pressable} from 'react-native';
 import {Marker, Callout} from 'react-native-maps';
 import axios from 'axios';
+import {OPENWEATHER_APIKEY} from '../.././helpers/constants';
 
 const MarkerInfoContainer = ({coordinate, ...props}) => {
   const [locationWeather, setLocationWeather] = useState({
@@ -12,22 +13,15 @@ const MarkerInfoContainer = ({coordinate, ...props}) => {
   const [loaded, setLoaded] = useState(false);
   const ref = useRef();
 
-  let url = `http://api.weatherstack.com/current?access_key=80a3192881ea56dea128cda503b36bb4&query=${coordinate.latitude},${coordinate.longitude}`;
+  // let url = `http://api.weatherstack.com/current?access_key=80a3192881ea56dea128cda503b36bb4&query=${coordinate.latitude},${coordinate.longitude}`;
+
+  let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinate.latitude}&lon=${coordinate.longitude}&exclude=hourly,minutely&units=metric&appid=${OPENWEATHER_APIKEY}`;
 
   let ulr2 = `https://eu1.locationiq.com/v1/reverse.php?key=363de1ecb652ea&lat=${coordinate.latitude}&lon=${coordinate.longitude}&format=json`;
 
   const setNewWeather = async () => {
-    console.log('setNewWeather');
     let temperature;
     let location;
-
-    // useEffect(
-    //   () => {
-    //     console.log('effect');
-    //   },
-    //   location,
-    //   temperature,
-    // );
 
     setLoaded(false);
     await axios
@@ -36,7 +30,7 @@ const MarkerInfoContainer = ({coordinate, ...props}) => {
         console.log(res.data, 'url res');
         // setLocation('mmm2');
         // setTemperature(res.data.current.temperature);
-        temperature = res.data.current.temperature;
+        temperature = res.data.current.temp;
       })
       .catch((err) => console.log(err));
 
@@ -51,26 +45,17 @@ const MarkerInfoContainer = ({coordinate, ...props}) => {
     setLocationWeather({location, temperature});
     setLoaded(true);
     redraw();
-
-    console.log('after axios');
-    console.log(location, 'location');
-    console.log(temperature, 'temperature');
-
-    redraw();
   };
 
   //Seems like don't working while callout showning...
   const redraw = () => {
     if (ref && ref.current && ref.current.redrawCallout) {
       console.log('redraw');
-      // ref.current.hideCallout();
-      // ref.current.redrawCallout();
-      // ref.current.showCallout();
+      ref.current.redrawCallout();
     }
   };
 
   useEffect(() => {
-    console.log('MarkerInfoContainer effect');
     setNewWeather();
   }, []);
 
@@ -92,12 +77,12 @@ const MarkerInfoContainer = ({coordinate, ...props}) => {
 const MarkerInfo = React.forwardRef(
   ({location, temperature, onPress, loaded, ...props}, ref) => {
     return (
-      <Marker {...props} onPress={onPress} ref={ref}>
+      <Marker style={{width: 150}} {...props} onPress={onPress} ref={ref}>
         <Callout onPress={() => props.onPressedCollapse(location)}>
           {loaded ? (
             <View>
               <Text>{location}</Text>
-              <Text>{temperature}</Text>
+              <Text>{temperature}°C</Text>
             </View>
           ) : (
             <Text>Loading...</Text>
